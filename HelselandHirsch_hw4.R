@@ -12,22 +12,44 @@ lowerg <- y[5]
 upperg <- y[14]
 print(paste(y[5], "to", y[14], "mg/L"))
 
-#Finding the parametric intervals
-n = 18
-alpha = 0.05
-t.value <- qt(1-alpha/2, n-1)
-t.value2 <- qt(1-alpha/2, n-1)
-ln.grano <- log(x)
-var.grano <- var(ln.grano)
-mean.ln.grano <- mean(ln.grano)
+#Maybe create a generic function to calculate all this no matter what data set we are using, notice the input of the function
+# is the data set we are studying and the alpha.
 
-lower <- exp(mean.ln.grano-t.value*sqrt(var.grano/n))
-lower
+#Try:
 
-upper <- exp(mean.ln.grano+t.value2*sqrt(var.grano/n))
-upper
+Symmetric_meadian <- function(x,alpha){
+  
+  n <-  length(x)
+  tval <- qt(1-alpha/2,n-1) 
+  ln_x <- log(x)
+  var_x <- var(ln_x)
+  mean <- mean(ln_x)
+  lower <- exp(xmean-tval*sqrt(var_x/n))
+  upper <- exp(xmean+tval*sqrt(var_x/n))
+  interval <- c(lower,upper)
+  print(paste(lower, "to", upper, "mg/L"))
+  return(interval)
+}
 
-print(paste(lower, "to", upper, "mg/L"))
+
+
+#In the cae of your code 
+# #Finding the parametric intervals
+# n = 18
+# alpha = 0.05
+# t.value <- qt(1-alpha/2, n-1)
+# t.value2 <- qt(1-alpha/2, n-1)
+# ln.grano <- log(x)
+# var.grano <- var(ln.grano)
+# mean.ln.grano <- mean(ln.grano)
+# 
+# lower <- exp(mean.ln.grano-t.value*sqrt(var.grano/n))
+# lower
+# 
+# upper <- exp(mean.ln.grano+t.value2*sqrt(var.grano/n))
+# upper
+# 
+# print(paste(lower, "to", upper, "mg/L"))
 
 
 #The non-parametric 95% interval estimates for the median is from 0.4 to 3 mg/L, while the parametric ranges from 0.5 to 1.8 mg/L. As the dataset is small and non-normal it is better to use non-parametric, because the non-parametric provides a wider range for the confidence interval than the parametric.
@@ -62,13 +84,31 @@ print(paste(Flows.x[6], "to", Flows.x[15], "cfs"))
 
 #Intervals for the mean (although the sample is small it is a binomial distribution)
 
-n =20
-alpha = 0.05
-t.value <- qt(1-alpha/2, n-1)
-varian <- var(Con_river$`Flow (cfs)`, na.rm = TRUE)
-lowflow <- mean(Con_river$`Flow (cfs)`, na.rm = TRUE) - t.value*(sqrt(varian/20))
-upperflow <- mean(Con_river$`Flow (cfs)`, na.rm = TRUE) + t.value*(sqrt(varian/20))
-print(paste(lowflow,"to", upperflow, "cfs"))
+#The same in this case you can have this as a function: 
+#This function calculates the symmetric interval estimate for the mean, so you have a generic function that you can use again.
+
+Symmetric_mean<- function(x,alpha){
+  
+  n <-  length(x)
+  tval <- qt(1-alpha/2,n-1) 
+  xvar <- var(x)
+  xmean <- mean(x)
+  lower<- xmean-tval*sqrt(xvar/n)
+  upper <-xmean+tval*sqrt(xvar/n)
+  interval <- c(lower,upper)
+  return(interval)
+}
+
+
+# Symmetric_mean_int(Conecuh$`Flow (cfs)`,0.05)
+# 
+# n =20
+# alpha = 0.05
+# t.value <- qt(1-alpha/2, n-1)
+# varian <- var(Con_river$`Flow (cfs)`, na.rm = TRUE)
+# lowflow <- mean(Con_river$`Flow (cfs)`, na.rm = TRUE) - t.value*(sqrt(varian/20))
+# upperflow <- mean(Con_river$`Flow (cfs)`, na.rm = TRUE) + t.value*(sqrt(varian/20))
+# print(paste(lowflow,"to", upperflow, "cfs"))
 
 
 #The lower and upper bounds for the non-parametric 95% interval estimates for the median are from 524 to 894 cfs. The lower and upper bounds for the 95% interval estimates for the mean are from 557 to 809 cfs. 
